@@ -5,7 +5,7 @@ const BandAdd = () => {
       <form>
         <input
           type="text"
-          class="form-control"
+          className="form-control"
           placeholder="Name Of New Band"
         />
       </form>
