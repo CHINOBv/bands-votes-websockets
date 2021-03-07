@@ -1,61 +1,13 @@
-import { useEffect, useState } from "react";
-
-import { io } from "socket.io-client";
+import { useContext } from "react";
 
 import BandAdd from "./components/BandAdd";
 import BandList from "./components/BandList";
+import GraphVotes from "./components/GraphVotes";
 
-let uri = "http://localhost:8080";
-
-const connectSocketServer = () => {
-  const socket = io(uri, {
-    transports: ["websocket"],
-  });
-  return socket;
-};
+import { SocketConext } from "./context/SocketContext";
 
 function App() {
-  const [socket] = useState(() => connectSocketServer());
-  const [online, setOnline] = useState(false);
-  const [bands, setBands] = useState([]);
-
-  useEffect(() => {
-    setOnline(socket.connected);
-  }, [socket]);
-
-  useEffect(() => {
-    socket.on("connect", () => {
-      setOnline(true);
-    });
-  }, [socket]);
-
-  useEffect(() => {
-    socket.on("disconnect", () => {
-      setOnline(false);
-    });
-  }, [socket]);
-
-  useEffect(() => {
-    socket.on("current-bands", (bands) => {
-      setBands(bands);
-    });
-  }, [socket]);
-
-  const increaseVotes = (id) => {
-    socket.emit("increase-votes", id);
-  };
-
-  const removeBand = (id) => {
-    socket.emit("remove-band", id);
-  };
-
-  const saveNewName = (id, name) => {
-    socket.emit("rename", [id, name]);
-  };
-
-  const createBand = (name) => {
-    socket.emit("new-band", { name });
-  };
+  const { online } = useContext(SocketConext);
 
   return (
     <>
@@ -74,15 +26,11 @@ function App() {
         <hr />
         <div className="row">
           <div className="col-8">
-            <BandList
-              data={bands}
-              increaseVotes={increaseVotes}
-              removeBand={removeBand}
-              saveNewName={saveNewName}
-            />
+            <GraphVotes />
+            <BandList />
           </div>
           <div className="col-4">
-            <BandAdd createBand={createBand} />
+            <BandAdd />
           </div>
         </div>
       </div>
