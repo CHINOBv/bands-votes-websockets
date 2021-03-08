@@ -4,7 +4,7 @@ import useSocket from "../hooks/useSocket";
 export const SocketConext = createContext();
 
 const SocketProvider = ({ children }) => {
-  const { socket, online } = useSocket("http://localhost:8080");
+  const { socket, online } = useSocket(process.env.REACT_APP_API);
 
   return (
     <SocketConext.Provider
